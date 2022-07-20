@@ -1,0 +1,40 @@
+
+    <?xml version="1.0"?>  
+    
+	<beans  xmlns="".. xsischemalocation="http://camel.apache..">  
+
+    <camel:routeContext xmlns=""..>
+	
+	<property name="locations">
+	<value>file:{apiProperties}</value>
+	</property>
+	
+	
+	<route id="com.employee.stats">
+	
+    <from uri="restlet:/employeeStats?restletMethods="POST"/>
+	
+	<unmarshall>
+	<json library="jackson" unmarshlltypename="src.Employee">
+	</unmarshall>
+	
+	<setProperty propertyName="body">
+	<simple>${in.body}</simple>
+	</setproperty>
+	
+	<bean id="employeemodel" method="emprequest"/>
+	
+	<hystrix>
+	<recipientlist>
+	<simple>{{src.appProperties.apicall}}
+	</recipientlist>
+	</hystrix>
+	
+	
+	<bean id="employeemodel" method="empresponse"/>
+	
+	</route>
+	</camel:routeContext>
+	
+	
+	<bean ref="employeemodel" class="src.Response"/>
